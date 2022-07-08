@@ -130,4 +130,4 @@ dmypy.json
 app/media/*.mp3
 *.mp3
 
-app/static/*.*
+app/static
