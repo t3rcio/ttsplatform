@@ -1,3 +1,4 @@
+from calendar import c
 import sys
 import os
 import django
@@ -5,11 +6,12 @@ import traceback
 import json
 import importlib
 import time
+from decouple import config
 
 __ENV__ = os.environ.get("ENVIRONMENT","development")
 if __ENV__ == 'development':    
-    sys.path.insert(0, '/home/tercio/Projetos/ttsplatform')
-    sys.path.insert(1, '/home/tercio/Projetos/ttsplatform/ttsapp')
+    sys.path.insert(0, config('APP_ROOT'))
+    sys.path.insert(1, config('APP_ROOT_APP'))
 elif __ENV__ == 'production':
     sys.path.insert(0, '/code')
 

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 from decouple import config
 
@@ -26,12 +26,14 @@ SECRET_KEY = config('SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-__ENV__ = os.get("ENVIRONMENT", 'development')
+__ENV__ = os.environ.get("ENVIRONMENT", 'development')
 ALLOWED_HOSTS = ['*']
+APP_URL = 'http://localhost:8080'
 
 if __ENV__ == 'production':
     DEBUG = False
-    ALLOWED_HOSTS = ['speak2me.app']
+    ALLOWED_HOSTS = ['172.45.0.4','speak2me.app']
+    APP_URL = 'speak2me.app'
 
 
 # Application definition
@@ -43,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app.core',
+    'app.monitor',
 ]
 
 MIDDLEWARE = [
@@ -101,20 +105,22 @@ if not DEBUG:
 
 TASKER = {
     'default_broker': {
-         'host': 'localhost', # host of your RabbitMQ server
-         'username': 'bunny', # your RabbitMQ username
-         'password': 'carrots', # your RabbitMQ password,
-         'queue': 'tasks',
-     },
+        'host': config('TASKER_HOST'), 
+        'username': config('TASKER_USER'), 
+        'password': config('TASKER_PASSWD'), 
+        'queue': config('TASKER_QUEUE'),
+        'exchange': config('TASKER_EXC')
+    },
 }
 
 if not DEBUG:
     TASKER = {
         'default_broker': {
-            'host': '172.45.0.2', # host of your RabbitMQ server
-            'username': 'lebremt', # your RabbitMQ username
-            'password': 'celeries', # your RabbitMQ password,
-            'queue': 'tasks',
+            'host': config('TASKER_HOST'), 
+            'username': config('TASKER_USER'), 
+            'password': config('TASKER_PASSWD'),
+            'queue': config('TASKER_QUEUE'),
+            'exchange': config('TASKER_EXC')
         },
     }
 
@@ -155,12 +161,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
-MEDIA_URL = 'media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'app/static')
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'app/media')
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'app/static'),
     os.path.join(BASE_DIR, 'app/templates'),
 ]
 
@@ -169,3 +175,4 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+APP_LOGPATH = os.path.join(BASE_DIR, 'logs')
