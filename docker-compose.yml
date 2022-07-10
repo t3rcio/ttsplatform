@@ -1,0 +1,64 @@
+version: "3.3"
+
+services:
+  broker:
+    image:  rabbitmq:3-management-alpine
+    restart: always
+    container_name: tts-broker
+    environment:
+      - RABBITMQ_DEFAULT_USER=${TASKER_USER}
+      - RABBITMQ_DEFAULT_PASS=${TASKER_PASSWD}
+    networks:
+      ttsplatform-net:
+        ipv4_address: 172.45.0.2      
+  db:    
+    image: postgres
+    restart: always
+    container_name: tts-db
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWD}
+    networks:
+      ttsplatform-net:
+        ipv4_address: 172.45.0.3
+  app:
+    build: .
+    restart: always
+    container_name: tts-app
+    environment:
+      - ENVIRONMENT=production
+    command: /usr/bin/supervisord
+    volumes:
+      - .:/code
+    ports:
+      - 9000:9000
+    depends_on:
+      - db
+      - broker
+    networks:
+      ttsplatform-net:
+        ipv4_address: 172.45.0.4
+  web:
+    build: ./nginx
+    restart: always
+    container_name: tts-web
+    volumes:
+      - ./app/static:/usr/share/nginx/html/static
+      - ./app/media:/usr/share/nginx/html/media
+    ports:
+      - 8080:8080
+    depends_on:
+      - app
+    command: [nginx-debug, '-g', 'daemon off;']
+    networks:
+      ttsplatform-net:
+        ipv4_address: 172.45.0.5
+
+
+networks:
+  ttsplatform-net:
+    external: true
+    

@@ -34,9 +34,9 @@ def monitoring(request, **kwargs):
             monitor = TaskMonitor.objects.filter(target='RequestTTS:{}'.format(ide))
             if monitor.count() > 0:
                 monitor = monitor.first()
-                res = {'progress': monitor.progress}
+                res = {'progress': monitor.progress, 'descricao':monitor.descricao}
                 if monitor.progress == 100:
-                    res = {'loadaudio':ide, 'progress':100}
+                    res = {'loadaudio':ide, 'progress':100, 'descricao':monitor.descricao}
     return JsonResponse(res)	
 
 
@@ -46,6 +46,6 @@ def tts(request, **kwargs):
     if ide != '':
         requesttts = RequestTTS.objects.get(ide=ide)
         contexto = {
-            'tts': requesttts
+            'tts': requesttts,
         }
     return render(request, 'result.html', contexto)
