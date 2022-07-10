@@ -14,6 +14,7 @@ if __ENV__ == 'development':
     sys.path.insert(1, config('APP_ROOT_APP'))
 elif __ENV__ == 'production':
     sys.path.insert(0, '/code')
+    sys.path.insert(1, '/code/ttsapp')
 
 os.environ["DJANGO_SETTINGS_MODULE"] = "ttsapp.settings"
 

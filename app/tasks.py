@@ -40,10 +40,11 @@ def task_convert_url(*args, **kwargs):
 	if request_obj:
 		target = 'RequestTTS:{}'.format(request_obj['ide'])
 		request_tts = RequestTTS.objects.get(ide=request_obj['ide'])
-		novo_monitor = TaskMonitor.objects.create(target=target, progress=33, status=STARTED)
+		novo_monitor = TaskMonitor.objects.create(target=target, progress=33, status=STARTED, descricao='Obtendo dados do texto...')
 		texto = obtem_texto(url=request_obj['url'])
 		novo_monitor.progress += 33
 		novo_monitor.status = RUNNING
+		novo_monitor.descricao = 'Convertendo para voz...'
 		novo_monitor.save()
 		request_tts.text = texto
 		request_tts.save()
@@ -52,6 +53,7 @@ def task_convert_url(*args, **kwargs):
 			novo_monitor.status = FINISHED
 			progresso_atual = novo_monitor.progress
 			novo_monitor.progress += (100 - progresso_atual)
+			novo_monitor.descricao = 'Concluindo...'
 		else:
 			novo_monitor.status = FAILED
 		novo_monitor.save()
