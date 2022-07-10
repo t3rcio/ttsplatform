@@ -17,6 +17,7 @@ class TaskMonitor(models.Model):
 	data = models.DateTimeField(default=timezone.now)
 	status = models.CharField(max_length=32, default=IDLE)
 	progress = models.IntegerField(default=0)
+	descricao = models.CharField(max_length=256, default='Carregando...')
 
 	def parse_target(self) -> tuple:
 		return self.target.split(':')
