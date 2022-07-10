@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>TTS</title>
+        <title>Leia pra mim</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">        
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css'%}">
@@ -19,10 +19,11 @@
                         let data = JSON.parse(this.responseText);
                         if (data.progress){                            
                             $("#loadingModal").modal('show');
-                            $("#progressbar").css("width", data.progress);
+                            $("#progressbar").css("width", data.progress + '%');
+                            $("#descricao").text(data.descricao)
                         }
                         if (data.loadaudio){
-                            setTimeout(window.location = '{{APP_URL}}/ide/' + data.loadaudio, 1000);
+                            setTimeout(window.location = '{{APP_URL}}/ide/' + data.loadaudio, 3000);
                         }
                     }
                     req.open("GET", url);
@@ -45,23 +46,29 @@
     <body class="bg-dark" style="padding:70px;">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-12 text-white">
+                <div class="col-12 text-white text-center">
+                    <img src="{% static 'imgs/headphones.png' %}" alt="headphones.png" title="Fones"/>
                     <h1>
-                        Conversor de texto
+                        Leia pra mim 
                     </h1>
-                    <div class="card">
-                        <div class="card-body tex-center">
-                            <form id="form" action="{% url 'home' %}" method="POST">
-                                {% csrf_token %}
-                                <div class="form-group">                          
-                                  <input type="url" placeholder="Cole a url aqui" name="url" class="form-control" id="url">
-                                </div>
-                                <hr/>
-                                <button type="button" onclick="submete()" class="btn btn-lg btn-primary">Converter</button>
-                            </form>
+                    <br/>
+                    <form id="form" action="{% url 'home' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">                          
+                            <input type="url" required placeholder="Cole a url aqui" name="url" class="form-control text-lg" id="url">
                         </div>
-                    </div> 
+                        <hr/>
+                        <button type="submit" class="btn btn-lg btn-primary">Leia me!</button>
+                    </form>
+                    <br/>
                 </div>
+                <div class="alert alert-info text-left">
+                    <strong>O que é?</strong> 
+                    Um conversor de texto para voz; ele lê o conteúdeo de um site para você.
+                    <hr/>
+                    <strong>Como usar?</strong>
+                    Cole uma URL no campo acima, e toque no botão "Leia-me". O texto será processado e carregado em áudio (mp3) para você ouvir.
+                </div>                
             </div>
         </div>
         <div id="loadingModal" class="modal" role="dialog">
@@ -69,7 +76,7 @@
               <!-- Modal content-->
               <div class="modal-content">
                 <div class="modal-header">
-                  <h4 class="modal-title">Carregando</h4>
+                  <h4 id="descricao" class="modal-title">Processando</h4>
                 </div>
                 <div class="modal-body">
                     <div class="progress">
