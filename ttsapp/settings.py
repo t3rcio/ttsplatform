@@ -28,14 +28,14 @@ DEBUG = True
 
 __ENV__ = os.environ.get("ENVIRONMENT", 'development')
 ALLOWED_HOSTS = ['*']
-APP_URL = 'http://localhost:8080'
+APP_URL = 'http://localhost:9010'
 
 if __ENV__ == 'production':
     DEBUG = False
-    ALLOWED_HOSTS = ['172.45.0.4','speak2me.app']
-    APP_URL = 'speak2me.app'
+    ALLOWED_HOSTS = ['172.45.0.5','172.45.0.4','speak2me.app']
+    APP_URL = 'http://172.45.0.5'
 
-
+DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
@@ -105,27 +105,13 @@ if not DEBUG:
 
 TASKER = {
     'default_broker': {
-        'host': config('TASKER_HOST'), 
-        'username': config('TASKER_USER'), 
-        'password': config('TASKER_PASSWD'), 
+        'host': config('TASKER_HOST'),
+        'username': config('TASKER_USER'),
+        'password': config('TASKER_PASSWD'),
         'queue': config('TASKER_QUEUE'),
         'exchange': config('TASKER_EXC')
     },
 }
-
-if not DEBUG:
-    TASKER = {
-        'default_broker': {
-            'host': config('TASKER_HOST'), 
-            'username': config('TASKER_USER'), 
-            'password': config('TASKER_PASSWD'),
-            'queue': config('TASKER_QUEUE'),
-            'exchange': config('TASKER_EXC')
-        },
-    }
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

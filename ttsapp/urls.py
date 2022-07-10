@@ -15,13 +15,18 @@ Including another URLconf
 """
 import django
 from django.contrib import admin
-from django.urls import path
+from django.contrib.staticfiles import views
+from django.urls import path, re_path
 from django.conf import settings
 
 from app.core.urls import urlpatterns as core_urls
 
 urlpatterns = [
-    path('manager/', admin.site.urls),
-    path('media/<str:path>',django.views.static.serve,{'document_root':settings.MEDIA_ROOT}),
+    path('manager/', admin.site.urls),    
 ] + core_urls
+
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$',views.serve,{'document_root':settings.MEDIA_ROOT}),
+    ]
 
