@@ -19,7 +19,8 @@ def index(request, **kwargs):
             new_request.save()
             contexto = {
                 'APP_URL':settings.APP_URL,
-                'ide': new_request.ide
+                'ide': new_request.ide,
+                'item': new_request,
             }
             publisher(task_convert_url, **{'request_tts':new_request.to_dict()})
     return render(request, 'index.html', contexto)

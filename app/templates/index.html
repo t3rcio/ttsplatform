@@ -55,7 +55,7 @@
                     <form id="form" action="{% url 'home' %}" method="POST">
                         {% csrf_token %}
                         <div class="form-group">                          
-                            <input type="url" required placeholder="Cole a url aqui" name="url" class="form-control text-lg" id="url">
+                            <input type="url" required placeholder="Cole a url aqui" name="url" class="form-control text-lg" id="url" value="{{item.url}}">
                         </div>
                         <hr/>
                         <button type="submit" class="btn btn-lg btn-primary">Leia me!</button>
